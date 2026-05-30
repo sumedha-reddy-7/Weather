@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WeatherScope | Global Dashboard</title>
+  <title>FarmSmart | Crop Weather Advisor</title>
   <link rel="stylesheet" href="css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,13 +12,13 @@
 
   <nav class="navbar">
     <div class="nav-brand">
-      <span class="brand-icon">⬡</span>
-      <span class="brand-name">WeatherScope</span>
+      <span class="brand-icon">🌾</span>
+      <span class="brand-name">FarmSmart</span>
     </div>
     <ul class="nav-links">
       <li><a href="#hero" class="nav-link active">Home</a></li>
-      <li><a href="#search-section" class="nav-link">Search</a></li>
-      <li><a href="#charts-section" class="nav-link">Analytics</a></li>
+      <li><a href="#advisor-section" class="nav-link">Advisor</a></li>
+      <li><a href="#forecast-section" class="nav-link">Forecast</a></li>
       <li><a href="#about" class="nav-link">About</a></li>
     </ul>
     <div class="nav-status">
@@ -27,21 +27,22 @@
     </div>
     <button class="hamburger" id="hamburger">&#9776;</button>
   </nav>
-
+  <div class="weather-banner" id="weatherBanner">🌾 Enter your location to get started</div>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#hero">Home</a>
-    <a href="#search-section">Search</a>
-    <a href="#charts-section">Analytics</a>
+    <a href="#advisor-section">Advisor</a>
+    <a href="#forecast-section">Forecast</a>
     <a href="#about">About</a>
   </div>
 
+  <!-- HERO -->
   <section class="hero" id="hero">
     <div class="hero-bg-grid"></div>
     <div class="hero-content">
-      <p class="hero-tag">Open-Meteo API · No Key Required</p>
-      <h1 class="hero-title">Global Weather<br/><span class="accent">Analytics</span></h1>
-      <p class="hero-sub">Real-time temperature, wind, humidity & hourly forecasts — visualized beautifully.</p>
-      <a href="#search-section" class="cta-btn">Explore Dashboard ↓</a>
+      <p class="hero-tag">Free · No Login · Works for any Indian Village</p>
+      <h1 class="hero-title">Weather Advice<br/><span class="accent">For Your Crop</span></h1>
+      <p class="hero-sub">Enter your location and crop — get real-time weather + smart farming advice tailored to what you're growing.</p>
+      <a href="#advisor-section" class="cta-btn">Get Crop Advice ↓</a>
     </div>
     <div class="hero-cards">
       <div class="stat-card">
@@ -49,8 +50,8 @@
         <span class="card-value" id="hero-temp">--°C</span>
       </div>
       <div class="stat-card">
-        <span class="card-label">Wind Speed</span>
-        <span class="card-value" id="hero-wind">-- km/h</span>
+        <span class="card-label">Rainfall Today</span>
+        <span class="card-value" id="hero-rain">-- mm</span>
       </div>
       <div class="stat-card">
         <span class="card-label">Humidity</span>
@@ -59,26 +60,44 @@
     </div>
   </section>
 
-  <section class="search-section" id="search-section">
+  <!-- ADVISOR SECTION -->
+  <section class="advisor-section" id="advisor-section">
     <div class="section-header">
-      <h2>Search a City</h2>
-      <p>Enter any city to pull live weather data</p>
+      <h2>Crop Weather Advisor</h2>
+      <p>Enter your village/city and select your crop</p>
     </div>
-    <div class="search-bar">
-      <input type="text" id="cityInput" placeholder="e.g. Hyderabad, Tokyo, London..." />
-      <button id="searchBtn">Search</button>
+
+    <div class="input-row">
+      <input type="text" id="cityInput" placeholder="e.g. Warangal, Nizamabad, Tandur..." />
+      <select id="cropSelect">
+        <option value="">-- Select Crop --</option>
+        <option value="rice">🌾 Rice (Paddy)</option>
+        <option value="wheat">🌿 Wheat</option>
+        <option value="tomato">🍅 Tomato</option>
+        <option value="cotton">🌸 Cotton</option>
+        <option value="maize">🌽 Maize</option>
+        <option value="sugarcane">🎋 Sugarcane</option>
+        <option value="groundnut">🥜 Groundnut</option>
+        <option value="chilli">🌶️ Chilli</option>
+        <option value="soybean">🫘 Soybean</option>
+        <option value="onion">🧅 Onion</option>
+      </select>
+      <button id="searchBtn">Get Advice</button>
     </div>
+
     <div class="quick-cities">
       <span>Quick picks:</span>
-      <button class="city-pill" data-city="Hyderabad">Hyderabad</button>
-      <button class="city-pill" data-city="Mumbai">Mumbai</button>
-      <button class="city-pill" data-city="Tokyo">Tokyo</button>
-      <button class="city-pill" data-city="London">London</button>
-      <button class="city-pill" data-city="New York">New York</button>
+      <button class="city-pill" data-city="Warangal">Warangal</button>
+      <button class="city-pill" data-city="Nizamabad">Nizamabad</button>
+      <button class="city-pill" data-city="Karimnagar">Karimnagar</button>
+      <button class="city-pill" data-city="Nalgonda">Nalgonda</button>
+      <button class="city-pill" data-city="Khammam">Khammam</button>
     </div>
+
     <div class="loader" id="loader">Fetching data...</div>
     <div class="error-msg" id="errorMsg"></div>
 
+    <!-- CURRENT WEATHER -->
     <div class="weather-display" id="weatherDisplay" style="display:none;">
       <div class="city-header">
         <h3 id="cityName">--</h3>
@@ -88,38 +107,47 @@
         <div class="w-stat"><span class="w-icon">🌡️</span><span class="w-label">Temperature</span><span class="w-val" id="wTemp">--</span></div>
         <div class="w-stat"><span class="w-icon">💧</span><span class="w-label">Humidity</span><span class="w-val" id="wHumid">--</span></div>
         <div class="w-stat"><span class="w-icon">💨</span><span class="w-label">Wind</span><span class="w-val" id="wWind">--</span></div>
-        <div class="w-stat"><span class="w-icon">🌧️</span><span class="w-label">Precipitation</span><span class="w-val" id="wPrecip">--</span></div>
-        <div class="w-stat"><span class="w-icon">👁️</span><span class="w-label">Visibility</span><span class="w-val" id="wVis">--</span></div>
+        <div class="w-stat"><span class="w-icon">🌧️</span><span class="w-label">Rainfall</span><span class="w-val" id="wPrecip">--</span></div>
+        <div class="w-stat"><span class="w-icon">☁️</span><span class="w-label">Cloud Cover</span><span class="w-val" id="wCloud">--</span></div>
         <div class="w-stat"><span class="w-icon">🌀</span><span class="w-label">Pressure</span><span class="w-val" id="wPressure">--</span></div>
       </div>
     </div>
+
+    <!-- ADVICE CARDS -->
+    <div class="advice-section" id="adviceSection" style="display:none;">
+      <h3 class="advice-title">🌱 Smart Farming Advice for <span id="adviceCropName">--</span></h3>
+      <div class="advice-grid" id="adviceGrid"></div>
+    </div>
   </section>
 
-  <section class="charts-section" id="charts-section">
+  <!-- 7 DAY FORECAST -->
+  <section class="forecast-section" id="forecast-section">
     <div class="section-header">
-      <h2>Hourly Analytics</h2>
-      <p>24-hour forecast breakdown</p>
+      <h2>7-Day Forecast</h2>
+      <p>Plan your farming week ahead</p>
+    </div>
+    <div class="forecast-strip" id="forecastStrip">
+      <p class="no-data">Search a location above to see forecast</p>
     </div>
     <div class="charts-grid">
-      <div class="chart-box"><h4>🌡️ Temperature Trend</h4><canvas id="tempChart"></canvas></div>
-      <div class="chart-box"><h4>💨 Wind Speed</h4><canvas id="windChart"></canvas></div>
-      <div class="chart-box"><h4>🌧️ Precipitation</h4><canvas id="precipChart"></canvas></div>
-      <div class="chart-box"><h4>☁️ Cloud Cover</h4><canvas id="cloudChart"></canvas></div>
+      <div class="chart-box"><h4>🌡️ Temperature Trend (7 Days)</h4><canvas id="tempChart"></canvas></div>
+      <div class="chart-box"><h4>🌧️ Rainfall Forecast (7 Days)</h4><canvas id="rainChart"></canvas></div>
     </div>
   </section>
 
+  <!-- ABOUT -->
   <section class="about-section" id="about">
     <div class="about-inner">
-      <h2>About This Project</h2>
-      <p>Built during a 4-day web development workshop using <strong>HTML, CSS, JavaScript</strong> and the free <strong>Open-Meteo API</strong>. Visualized using <strong>Chart.js</strong>. No API key required.</p>
+      <h2>About FarmSmart</h2>
+      <p>Built for India's <strong>140 million small farmers</strong> who use basic smartphones but have no free tool that translates weather into farming action. FarmSmart bridges that gap — real weather, real advice, zero cost.</p>
       <div class="tech-pills">
-        <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Chart.js</span><span>Open-Meteo API</span>
+        <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Chart.js</span><span>Open-Meteo API</span><span>Spring Boot</span>
       </div>
     </div>
   </section>
 
   <footer class="footer">
-    <p>⬡ WeatherScope — Built for Hackathon 2026</p>
+    <p>🌾 FarmSmart — Built for Hackathon 2026 · Helping Indian Farmers</p>
   </footer>
 
   <script src="js/app.js"></script>
